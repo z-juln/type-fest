@@ -1,0 +1,34 @@
+{
+  "name": "@juln/type-fest",
+  "version": "1.0.0",
+  "description": "A collection of essential TypeScript types",
+	"types": "./index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/z-juln/type-fest.git"
+  },
+	"files": [
+		"index.d.ts"
+	],
+	"keywords": [
+		"typescript",
+		"ts",
+		"types",
+		"utility",
+		"util",
+		"utilities",
+		"omit",
+		"merge",
+		"json",
+		"generics"
+	],
+  "author": "juln",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/z-juln/type-fest/issues"
+  },
+  "homepage": "https://github.com/z-juln/type-fest#readme",
+  "dependencies": {
+    "type-fest": "latest"
+  }
+}

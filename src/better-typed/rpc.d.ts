@@ -1,6 +1,6 @@
 import { IRPCOptions } from '@mixer/postmessage-rpc';
 import { IsUnknown } from 'type-fest';
-import TypedEventEmitter3 from './eventemitter3';
+import { _Class_TypedEventEmitter3 } from './eventemitter3';
 
 type DefaultEventMap<EventName extends string = string> = Record<EventName, {
   isPromise?: true;
@@ -8,13 +8,31 @@ type DefaultEventMap<EventName extends string = string> = Record<EventName, {
   data?: any;
 }>;
 
+/**
+ * EventMap 转 _Class_TypedEventEmitter3的EventMap
+ * 
+ *  type EventMap = Record<EventName, {
+ *    params?: object;
+ *  }>;
+ *
+ *  type EE_EventMap<EventMap> = Record<string, {
+ *    args?: any[];
+ *  }>;
+ */
+type EE_EventMap<EventMap extends DefaultEventMap = DefaultEventMap> = {
+  [K in keyof EventMap]: {
+    args: IsUnknown<EventMap[K]['params']> extends true ? [] : [EventMap[K]['params']];
+  };
+};
+
+
 declare class _TypedRPC<
   EventMap extends DefaultEventMap = DefaultEventMap,
   /** 默认为严格模式, 严格模式下, 未声明的EventName会报ts类型错误 */
   Strict extends boolean = true,
   _EventName = Strict extends true ? keyof EventMap : (keyof EventMap | (string & {})),
 // @ts-ignore
-> extends TypedEventEmitter3<EventMap> {
+> extends _Class_TypedEventEmitter3<EE_EventMap<EventMap>, Strict> {
   readonly isReady: Promise<void>;
   /**
    * Creates a new RPC instance. Note: you should use the `rpc` singleton,

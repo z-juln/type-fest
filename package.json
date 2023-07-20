@@ -2,29 +2,29 @@
   "name": "@juln/type-fest",
   "version": "1.0.2",
   "description": "A collection of essential TypeScript types",
-	"types": "src/index.d.ts",
+  "types": "src/index.d.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/z-juln/type-fest.git"
   },
-	"files": [
-		"src"
-	],
+  "files": [
+    "src"
+  ],
   "publishConfig": {
     "access": "public"
   },
-	"keywords": [
-		"typescript",
-		"ts",
-		"types",
-		"utility",
-		"util",
-		"utilities",
-		"omit",
-		"merge",
-		"json",
-		"generics"
-	],
+  "keywords": [
+    "typescript",
+    "ts",
+    "types",
+    "utility",
+    "util",
+    "utilities",
+    "omit",
+    "merge",
+    "json",
+    "generics"
+  ],
   "author": "juln",
   "license": "ISC",
   "bugs": {
@@ -33,5 +33,14 @@
   "homepage": "https://github.com/z-juln/type-fest#readme",
   "dependencies": {
     "type-fest": "latest"
+  },
+  "devDependencies": {
+    "@mixer/postmessage-rpc": "^1.0.0",
+    "eventemitter3": "^3.0.0",
+    "tsd": "^0.28.1"
+  },
+  "peerDependencies": {
+    "@mixer/postmessage-rpc": "^1.0.0",
+    "eventemitter3": "^3.0.0"
   }
 }

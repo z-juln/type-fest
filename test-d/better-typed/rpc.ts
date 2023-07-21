@@ -131,4 +131,10 @@ rpc.call('close', {});
 
 // 3. TypedSimpleRPC
 const t1 = {} as TypedRPC<{}, {}>;
+// TypedRPC有继承eventemitter3的类型提示
+t1.on;
 const t2 = {} as TypedSimpleRPC<{}, {}>;
+// TypedSimpleRPC无继承eventemitter3的类型提示
+expectError(
+  t2.on
+);

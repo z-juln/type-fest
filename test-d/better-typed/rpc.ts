@@ -1,66 +1,79 @@
 import { expectError } from 'tsd';
-import TypedRPC from "../../src/better-typed/rpc";
+import TypedRPC, { TypedSimpleRPC } from "../../src/better-typed/rpc";
+import { RPC } from '@mixer/postmessage-rpc';
 
-interface MyEventMap {
+type ExposeMap = {
   'load-error': {
     data: Error;
   };
   'close': {
   };
   'result': {
-    data: {
-      mask: string;
-      cutImg: string;
-    };
-  };
-  'fetch': {
     isPromise: true;
     params: {
-      data: any;
-      space?: string | number;
+      pageNum?: number;
+      pageSize?: number;
     };
     data: {
-      code: 200;
-      data: Object;
+      code: number;
+      list: any[];
     };
   };
 }
 
-const rpc: TypedRPC<MyEventMap> = {} as any;
+type CallMap = {
+  'simpleLoad': {};
+  'load': {
+    params: {
+      immediately?: boolean;
+    };
+    data: {
+      success: boolean;
+    };
+  };
+  'close': {};
+}
+
+const rpc = new RPC({
+  target: window.frames,
+  serviceId: 'test',
+}) as any as TypedRPC<ExposeMap, CallMap>;
 
 // test1: expose
+// TypedRPC只能接受固定格式的范型
+expectError(() => {
+  type Test1 = TypedRPC<{
+    'load-error': {
+      data: Error;
+    };
+  }, false>;
+});
 // EventName有代码提示
 rpc.expose('load-error', () => {
   return new Error('load-error');
 });
-rpc.expose('result', () => {
-  return {
-    mask: 'xxx',
-    cutImg: 'xxx',
-  };
-});
-rpc.expose('fetch', async ({ space = 2 }) => {
+rpc.expose('result', async ({ pageNum, pageSize }) => {
   return {
     code: 200,
-    data: {
-      a: 1,
-    },
+    list: [
+      { content: 'xxx' },
+    ],
   };
 });
 // params不对, 代码报错
 expectError(
-  rpc.expose('fetch', async ({ space = 2, a: number }) => {
+  rpc.expose('result', async ({ limit }) => {
     return {
       code: 200,
-      data: {
-        a: 1,
-      },
+      list: [
+        { content: 'xxx' },
+      ],
     };
   })
 );
 // returnType不对, 代码报错
 expectError(
-  rpc.expose('fetch', async ({ space = 2 }) => {
+  rpc.expose('result', async ({ pageNum, pageSize }) => {
     return {
       code: 200,
     };
@@ -68,7 +81,7 @@ expectError(
 );
 // isPromise设置为true时, returnValue必须是promise, 代码报错
 expectError(
-  rpc.expose('fetch', ({ space = 2 }) => {
+  rpc.expose('result', ({ pageNum, pageSize }) => {
     return {
       code: 200,
       data: { a: 1 },
@@ -77,31 +90,45 @@ expectError(
 );
 // 1. 严格模式下, 未声明的eventName, 代码报错
 expectError(
-  (rpc as TypedRPC<MyEventMap>).expose('unkown', (a: any) => a)
+  (rpc as TypedRPC<ExposeMap, CallMap>).expose('unkown', (a: any) => a)
 );
 // 2. 非严格模式下, 未声明的eventName, handler为: (params: any） => Promise<any> | any)
-(rpc as TypedRPC<MyEventMap, false>).expose('unkown', a => a);
+(rpc as TypedRPC<ExposeMap, CallMap, false>).expose('unkown', a => a);
+// call上的Event不能使用
+expectError(
+  rpc.expose('simpleLoad', () => {})
+);
 
 // test2: call
 // EventName有代码提示
+rpc.call('load', {
+  immediately: true,
+});
 // 无params时, params必须为object (rpc本来就是object类型)
-rpc.call('close', {});
+rpc.call('simpleLoad', {});
+// params不对, 代码报错
+expectError(
+  rpc.call('load', {a: 1})
+);
 // 不传waitForReply时, 返回值为promise<Data>
-rpc.call('close', {})
+rpc.call('load', {})
   .then(() => {
     
   });
 // 传waitForReply=false时, 返回值为void, 代码报错
 expectError(
-  rpc.call('close', {}, false)
+  rpc.call('load', {}, false)
     .then(() => {
       
     })
 );
-// params不对, 代码报错
+// expose上的Event不能使用
 expectError(
-  rpc.call('fetch', {})
+  rpc.call('load-error', {})
 );
-rpc.call('fetch', {
-  data: { a: 1 },
-});
+// expose与call重复时, 没问题
+rpc.call('close', {});
+
+// 3. TypedSimpleRPC
+const t1 = {} as TypedRPC<{}, {}>;
+const t2 = {} as TypedSimpleRPC<{}, {}>;

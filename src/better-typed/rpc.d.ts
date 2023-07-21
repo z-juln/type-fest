@@ -2,37 +2,43 @@ import { IRPCOptions } from '@mixer/postmessage-rpc';
 import { IsUnknown } from 'type-fest';
 import { _Class_TypedEventEmitter3 } from './eventemitter3';
 
-type DefaultEventMap<EventName extends string = string> = Record<EventName, {
+type EventMap = Record<string, {
   isPromise?: true;
   params?: object;
   data?: any;
 }>;
+type ExposeMap = EventMap;
+type CallMap = EventMap;
 
 /**
  * EventMap 转 _Class_TypedEventEmitter3的EventMap
  * 
  *  type EventMap = Record<EventName, {
- *    params?: object;
+ *    data?: object;
  *  }>;
  *
  *  type EE_EventMap<EventMap> = Record<string, {
  *    args?: any[];
  *  }>;
  */
-type EE_EventMap<EventMap extends DefaultEventMap = DefaultEventMap> = {
+type EE_EventMap<EventMap extends EventMap = EventMap> = {
   [K in keyof EventMap]: {
-    args: IsUnknown<EventMap[K]['params']> extends true ? [] : [EventMap[K]['params']];
+    args: IsUnknown<EventMap[K]['data']> extends true ? [] : [EventMap[K]['data']];
   };
 };
 
+type ParentClass<Simple extends boolean, EventMap> = Simple extends true ? object : _Class_TypedEventEmitter3<EE_EventMap<EventMap>, Strict>;
 
 declare class _TypedRPC<
-  EventMap extends DefaultEventMap = DefaultEventMap,
+  ExposeMap extends ExposeMap,
+  CallMap extends CallMap,
   /** 默认为严格模式, 严格模式下, 未声明的EventName会报ts类型错误 */
   Strict extends boolean = true,
-  _EventName = Strict extends true ? keyof EventMap : (keyof EventMap | (string & {})),
-// @ts-ignore
-> extends _Class_TypedEventEmitter3<EE_EventMap<EventMap>, Strict> {
+  /** 默认保留原来的api (从eventemitter3继承过来的属性和方法), 设置true即位Simple模式, 不继承eventemitter3 */
+  Simple extends boolean = false,
+  _ExposeName = Strict extends true ? keyof ExposeMap : (keyof ExposeMap | (string & {})),
+  _CallName = Strict extends true ? keyof CallMap : (keyof CallName | (string & {})),
+> extends ParentClass<Simple, ExposeMap & CallMap> {
   readonly isReady: Promise<void>;
   /**
    * Creates a new RPC instance. Note: you should use the `rpc` singleton,
@@ -43,29 +49,29 @@ declare class _TypedRPC<
    * Create instantiates a new RPC instance and waits until it's ready
    * before returning.
    */
-  create(options: IRPCOptions): Promise<_TypedRPC<EventMap, Strict>>;
+  create(options: IRPCOptions): Promise<_TypedRPC<ExposeMap, CallMap, Strict, Simple>>;
   /**
    * Attaches a method callable by the other window, to this one. The handler
    * function will be invoked with whatever the other window gives us. Can
    * return a Promise, or the results directly.
    */
   expose<
-    EventName extends _EventName,
-    EventHasType extends (EventName extends keyof EventMap ? true : false),
+    EventName extends _ExposeName,
+    EventHasType extends (EventName extends keyof ExposeMap ? true : false),
     Params extends (
       EventHasType extends true
         // @ts-ignore
-        ? EventMap[EventName]['params']
+        ? ExposeMap[EventName]['params']
         : any
     ),
     Data extends (
       EventHasType extends true
         // @ts-ignore
-        ? EventMap[EventName]['data']
+        ? ExposeMap[EventName]['data']
         : any
     ),
     // @ts-ignore
-    IsPromise extends EventMap[EventName]['isPromise'],
+    IsPromise extends ExposeMap[EventName]['isPromise'],
     HandlerReturnValue extends (IsPromise extends true ? Promise<Data> : Data),
   >(
     method: EventName,
@@ -77,18 +83,18 @@ declare class _TypedRPC<
         : (params: any) => any,
   ): this;
   call<
-    EventName extends _EventName,
-    EventHasType extends (EventName extends keyof EventMap ? true : false),
+    EventName extends _CallName,
+    EventHasType extends (EventName extends keyof CallMap ? true : false),
     Params extends (
       EventHasType extends true
         // @ts-ignore
-        ? EventMap[EventName]['params']
+        ? CallMap[EventName]['params']
         : object
     ),
     Data extends (
       EventHasType extends true
         // @ts-ignore
-        ? EventMap[EventName]['data']
+        ? CallMap[EventName]['data']
         : object
     ),
   >(
@@ -97,12 +103,12 @@ declare class _TypedRPC<
     waitForReply?: true,
   ): Promise<unknown extends Data ? void : Data>;
   call<
-    EventName extends _EventName,
-    EventHasType extends (EventName extends keyof EventMap ? true : false),
+    EventName extends _CallName,
+    EventHasType extends (EventName extends keyof CallMap ? true : false),
     Params extends (
       EventHasType extends true
         // @ts-ignore
-        ? EventMap[EventName]['params']
+        ? CallMap[EventName]['params']
         : object
     ),
   >(
@@ -121,7 +127,26 @@ declare class _TypedRPC<
   remoteVersion(): string | undefined;
 }
 
-// @ts-ignore
-type TypedRPC<EventMap, Strict extends boolean = true> = _TypedRPC<EventMap, Strict>;
+type TypedRPC<
+  EventMap extends ExposeMap,
+  CallMap extends CallMap,
+  Strict extends boolean = true,
+> = _TypedRPC<
+  EventMap,
+  CallMap,
+  Strict,
+  false,
+>;
+
+export type TypedSimpleRPC<
+  ExposeMap extends ExposeMap,
+  CallMap extends CallMap,
+  Strict extends boolean = true,
+> = _TypedRPC<
+  ExposeMap,
+  CallMap,
+  Strict,
+  true,
+>;
 
 export default TypedRPC;

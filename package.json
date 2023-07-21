@@ -48,5 +48,11 @@
   "peerDependencies": {
     "@mixer/postmessage-rpc": "^1.0.0",
     "eventemitter3": "^3.0.0"
-  }
+  },
+	"tsd": {
+		"compilerOptions": {
+      "noUnusedLocals": false,
+      "noUnusedParameters": false
+		}
+	}
 }

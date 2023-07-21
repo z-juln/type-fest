@@ -1,5 +1,5 @@
 import { expectError } from 'tsd';
-import TypedRPC from "../../better-typed/rpc";
+import TypedRPC from "../../src/better-typed/rpc";
 
 interface MyEventMap {
   'load-error': {
@@ -48,14 +48,16 @@ rpc.expose('fetch', async ({ space = 2 }) => {
   };
 });
 // params不对, 代码报错
-rpc.expose('fetch', async ({ space = 2, a: number }) => {
-  return {
-    code: 200,
-    data: {
-      a: 1,
-    },
-  };
-});
+expectError(
+  rpc.expose('fetch', async ({ space = 2, a: number }) => {
+    return {
+      code: 200,
+      data: {
+        a: 1,
+      },
+    };
+  })
+);
 // returnType不对, 代码报错
 expectError(
   rpc.expose('fetch', async ({ space = 2 }) => {
@@ -75,7 +77,7 @@ expectError(
 );
 // 1. 严格模式下, 未声明的eventName, 代码报错
 expectError(
-  (rpc as TypedRPC<MyEventMap>).expose('unkown', (a) => a)
+  (rpc as TypedRPC<MyEventMap>).expose('unkown', (a: any) => a)
 );
 // 2. 非严格模式下, 未声明的eventName, handler为: (params: any） => Promise<any> | any)
 (rpc as TypedRPC<MyEventMap, false>).expose('unkown', a => a);

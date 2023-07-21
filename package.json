@@ -1,8 +1,12 @@
 {
   "name": "@juln/type-fest",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "A collection of essential TypeScript types",
   "types": "src/index.d.ts",
+  "scripts": {
+    "test": "tsd",
+    "prepublishOnly": "npm run test"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/z-juln/type-fest.git"
@@ -36,8 +40,10 @@
   },
   "devDependencies": {
     "@mixer/postmessage-rpc": "^1.0.0",
+    "@sindresorhus/tsconfig": "^3.0.1",
     "eventemitter3": "^3.0.0",
-    "tsd": "^0.28.1"
+    "tsd": "^0.28.1",
+    "typescript": "^5.1.6"
   },
   "peerDependencies": {
     "@mixer/postmessage-rpc": "^1.0.0",

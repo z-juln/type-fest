@@ -1,5 +1,5 @@
 import { expectError } from 'tsd';
-import TypedEventEmitter3 from '../../better-typed/eventemitter3';
+import TypedEventEmitter3 from '../../src/better-typed/eventemitter3';
 
 interface MyEventMap {
   'load-error': {
@@ -41,7 +41,7 @@ ee.off('close', () => {});
 ee.listenerCount('close');
 // 1. 严格模式下, 未声明的eventName, 代码报错
 expectError(
-  (ee as TypedEventEmitter3<MyEventMap>).on('unkown', (a) => a)
+  (ee as TypedEventEmitter3<MyEventMap>).on('unkown', (a: any) => a)
 );
 // 2. 非严格模式下, 未声明的eventName, handler为: (params: any） => Promise<any> | any)
 (ee as TypedEventEmitter3<MyEventMap, false>).on('unkown', a => a);

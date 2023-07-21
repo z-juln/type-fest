@@ -1,5 +1,5 @@
 import { expectError } from 'tsd';
-import TypedRPC, { TypedSimpleRPC } from "../../src/better-typed/rpc";
+import TypedRPC from "../../src/better-typed/rpc";
 import { RPC } from '@mixer/postmessage-rpc';
 
 type ExposeMap = {
@@ -42,7 +42,7 @@ const rpc = new RPC({
 // test1: expose
 // TypedRPC只能接受固定格式的范型
 expectError(() => {
-  type Test1 = TypedRPC<{
+  let rpc: TypedRPC<{
     'load-error': {
       data: Error;
     };
@@ -128,13 +128,3 @@ expectError(
 );
 // expose与call重复时, 没问题
 rpc.call('close', {});
-
-// 3. TypedSimpleRPC
-const t1 = {} as TypedRPC<{}, {}>;
-// TypedRPC有继承eventemitter3的类型提示
-t1.on;
-const t2 = {} as TypedSimpleRPC<{}, {}>;
-// TypedSimpleRPC无继承eventemitter3的类型提示
-expectError(
-  t2.on
-);

@@ -27,13 +27,14 @@ import { RPC } from "@mixer/postmessage-rpc";
 import type { TypedRPC } from "@juln/type-fest";
 
 /**
- * interface MyEventMap {
- *  "eventName1": {
+ * 只能用type, 不能用interface, 不然类型约束不严格会有问题
+ * type ExposeMap = {
+ *  "exposeName1": {
  *    isPromise: true;
  *    params: any;
  *    data: any;
  *  };
- *  "eventName2": {
+ *  "exposeName2": {
  *    isPromise: true;
  *    params: any;
  *    data: any;
@@ -41,28 +42,46 @@ import type { TypedRPC } from "@juln/type-fest";
  *  ...
  * }
  */
-interface MyEventMap {
-  "load-error": {
+type ExposeMap = {
+  'load-error': {
     data: Error;
   };
-  "close-modal": {};
-  "fetch-init-data": {
+  'close-window': {};
+  'result': {
     isPromise: true;
     params: {
-      data: any;
+      pageNum?: number;
+      pageSize?: number;
     };
     data: {
-      code: 200;
+      code: number;
+      list: any[];
     };
   };
 }
+type CallMap = {
+  'simpleLoad': {};
+  'load': {
+    params: {
+      immediately?: boolean;
+    };
+    data: {
+      success: boolean;
+    };
+  };
+  'close-modal': {};
+}
 
-const rpc: TypedRPC<MyEventMap> = new RPC({
+const rpc: TypedRPC<ExposeMap, CallMap> = new RPC({
   target: window.top!,
   serviceId: "test",
 });
 
-rpc.call("close-modal");
+rpc.call("close-modal", {}); // eventName, params, returnType等类型限制
+rpc.call("unknown", {}); // 未声明eventName, 类型报错
+
+// 2. 非严格模式下, 未声明的eventName, 类型不报错, handler为: (params: any） => Promise<any> | any)
+(rpc as TypedRPC<ExposeMap, CallMap, false>).expose('unkown', a => a);
 ```
 
 ### `TypedEventEmitter`

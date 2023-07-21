@@ -7,38 +7,17 @@ type EventMap = Record<string, {
   params?: object;
   data?: any;
 }>;
-type ExposeMap = EventMap;
-type CallMap = EventMap;
-
-/**
- * EventMap 转 _Class_TypedEventEmitter3的EventMap
- * 
- *  type EventMap = Record<EventName, {
- *    data?: object;
- *  }>;
- *
- *  type EE_EventMap<EventMap> = Record<string, {
- *    args?: any[];
- *  }>;
- */
-type EE_EventMap<EventMap extends EventMap = EventMap> = {
-  [K in keyof EventMap]: {
-    args: IsUnknown<EventMap[K]['data']> extends true ? [] : [EventMap[K]['data']];
-  };
-};
-
-type ParentClass<Simple extends boolean, EventMap> = Simple extends true ? object : _Class_TypedEventEmitter3<EE_EventMap<EventMap>, Strict>;
+type _ExposeMap = EventMap;
+type _CallMap = EventMap;
 
 declare class _TypedRPC<
-  ExposeMap extends ExposeMap,
-  CallMap extends CallMap,
+  ExposeMap extends _ExposeMap,
+  CallMap extends _CallMap,
   /** 默认为严格模式, 严格模式下, 未声明的EventName会报ts类型错误 */
   Strict extends boolean = true,
-  /** 默认保留原来的api (从eventemitter3继承过来的属性和方法), 设置true即位Simple模式, 不继承eventemitter3 */
-  Simple extends boolean = false,
   _ExposeName = Strict extends true ? keyof ExposeMap : (keyof ExposeMap | (string & {})),
-  _CallName = Strict extends true ? keyof CallMap : (keyof CallName | (string & {})),
-> extends ParentClass<Simple, ExposeMap & CallMap> {
+  _CallName = Strict extends true ? keyof CallMap : (keyof CallMap | (string & {})),
+> {
   readonly isReady: Promise<void>;
   /**
    * Creates a new RPC instance. Note: you should use the `rpc` singleton,
@@ -49,7 +28,7 @@ declare class _TypedRPC<
    * Create instantiates a new RPC instance and waits until it's ready
    * before returning.
    */
-  create(options: IRPCOptions): Promise<_TypedRPC<ExposeMap, CallMap, Strict, Simple>>;
+  create(options: IRPCOptions): Promise<_TypedRPC<ExposeMap, CallMap, Strict>>;
   /**
    * Attaches a method callable by the other window, to this one. The handler
    * function will be invoked with whatever the other window gives us. Can
@@ -128,25 +107,13 @@ declare class _TypedRPC<
 }
 
 type TypedRPC<
-  EventMap extends ExposeMap,
-  CallMap extends CallMap,
+  EventMap extends _ExposeMap,
+  CallMap extends _CallMap,
   Strict extends boolean = true,
 > = _TypedRPC<
   EventMap,
   CallMap,
-  Strict,
-  false,
->;
-
-export type TypedSimpleRPC<
-  ExposeMap extends ExposeMap,
-  CallMap extends CallMap,
-  Strict extends boolean = true,
-> = _TypedRPC<
-  ExposeMap,
-  CallMap,
-  Strict,
-  true,
+  Strict
 >;
 
 export default TypedRPC;

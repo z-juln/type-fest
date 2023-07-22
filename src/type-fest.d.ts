@@ -12,10 +12,16 @@ export type As<OriginType, TargetType> = TargetType;
 
 /**
  * Make partial properties in T optional
+ * 
+ * @example
+ * type R = PartialPartial<{ a: number; b: number; }, 'a'>; // { a?: number; b: number; }
  */
 export type PartialPartial<T, U extends keyof T> = Omit<T, U> & Partial<Pick<T, U>>;
 
 /**
  * Make partial properties in T required
+ * 
+ * @example
+ * type R = PartialRequired<{ a?: number; b?: number; }, 'a'>; // { a: number; b?: number; }
  */
 export type PartialRequired<T, U extends keyof T> = Omit<T, U> & Required<Pick<T, U>>;

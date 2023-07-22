@@ -4,37 +4,37 @@
 
 <p align='center'>@juln/type-fest</p>
 
-<p align='center'>
+<!-- <p align='center'>
   <a href='https://discord.gg/UgKBCq9'>
     <img src='https://img.shields.io/badge/-Discord-yellowgreen?logo=discord&logoColor=white&color=7289da'/>
   </a>
   <a href='https://www.typescriptlang.org/play?install-plugin=%40type-challenges%2Fplayground-plugin'>
     <img src='https://img.shields.io/badge/Playground-143?logo=typescript&color=3178C6&logoColor=fff' />
   </a>
-</p>
+</p> -->
 
 <br>
 
 <p align='center'>
-  English | <a href='./README.zh-CN.md'>简体中文</a>
+  简体中文 | <a href='./README.md'>English</a>
 </p>
 
-A collection of TypeScript types that have undergone type testing
+经过类型测试 的 TypeScript 类型的集合
 
-Programming Guide for Writing Types:
+编写类型编程指南:
 
-1. The most important aspect of type programming is to clearly know the most basic operations, which are joint to joint, joint to cross, cross to cross, and irreversible.
-2. Then the rest is logical splitting, breaking it down into various types of functions, and assembling them together, and that's all.
+1. 类型编程最主要的就是，明确知道最基础的那些操作，哪些是联合转联合、哪些是联合转交叉、哪些是交叉转交叉、哪些是不可逆操作。
+2. 然后剩下的就是逻辑拆分，拆分成各个类型函数，再组装起来，就 OK 了。
 
-## common-types
+## common-types (通用类型)
 
-Based on [`type-fest`](https://www.npmjs.com/package/type-fest) Conduct secondary development and expose all types provided by `type-fest` (please refer to the official documentation for the use of `type test`, which is not provided here)
+基于 [`type-fest`](https://www.npmjs.com/package/type-fest) 进行二次开发，且暴露出 `type-fest` 提供的所有类型 (`type-fest` 的使用文档请自行去官方看，这里不提供)
 
 ### `As`
 
-`As` operation on type. Similar to the type assertion operator in typescript - `as`.
+对类型的 "as" 操作. 类似于对“typescript”中的类型断言操作符 ——— `as`
 
-Using `@ts-ignore` can cause type loss, and most scenarios are not as comfortable as using `as`.
+用 "@ts-ignore" 会导致类型丢失, 大部分场景不如 "as" 操作舒服
 
 ```TypeScript
 type BetterContent<D extends { content: string }, prefix extends string> =
@@ -44,7 +44,7 @@ type R = BetterContent<{ content: 'xxx' }, 'content'>;
 
 ### `PartialPartial`
 
-Some attributes of the specified object become Option type
+指定 object 的部分属性变成可选类型
 
 ```TypeScript
 type R = PartialPartial<{ a: number; b: number; }, 'a'>; // { a?: number; b: number; }
@@ -52,27 +52,26 @@ type R = PartialPartial<{ a: number; b: number; }, 'a'>; // { a?: number; b: num
 
 ### `PartialRequired`
 
-Some attributes of the specified object become Required type
+指定 object 的部分属性变成不可选类型
 
 ```TypeScript
 type R = PartialRequired<{ a?: number; b?: number; }, 'a'>; // { a: number; b?: number; }
 ```
 
-## better-typed
+## better-typed (增强第三方类型)
 
-Strengthening the TS type for third-party libraries
+针对第三方库进行 ts 类型的加强
 
 ### `TypedRPC`
 
-Strengthen [`@mixer/postmessage-rpc`](https://www.npmjs.com/package/@mixer/postmessage-rpc)
+加强 [`@mixer/postmessage-rpc`](https://www.npmjs.com/package/@mixer/postmessage-rpc)
 
 ```TypeScript
 import { RPC } from "@mixer/postmessage-rpc";
 import type { TypedRPC } from "@juln/type-fest";
 
 /**
- * Only 'type' can be used, not 'interface', otherwise lax type constraints will cause problems
- *
+ * 只能用type, 不能用interface, 不然类型约束不严格会有问题
  * type ExposeMap = {
  *  "exposeName1": {
  *    isPromise: true;
@@ -104,6 +103,10 @@ type ExposeMap = {
     };
   };
 }
+
+/**
+ * 与ExposeMap用法一致
+ */
 type CallMap = {
   'simpleLoad': {};
   'load': {
@@ -122,16 +125,16 @@ const rpc: TypedRPC<ExposeMap, CallMap> = new RPC({
   serviceId: "test",
 });
 
-rpc.call("close-modal", {}); // Restrictions on types such as 'eventName', 'params', and 'returnType'
-rpc.call("unknown", {}); // 'eventName' not declared, type error reported
+rpc.call("close-modal", {}); // eventName, params, returnType等类型限制
+rpc.call("unknown", {}); // 未声明eventName, 类型报错
 
-// 2. In non strict mode, for undeclared 'eventName', the type does not report an error, and the 'handler' is: (params: any） => Promise<any> | any)
+// 2. 非严格模式下, 未声明的eventName, 类型不报错, handler为: (params: any） => Promise<any> | any)
 (rpc as TypedRPC<ExposeMap, CallMap, false>).expose('unkown', a => a);
 ```
 
 ### `TypedEventEmitter`
 
-Strengthen [`eventemitter3`](https://www.npmjs.com/package/eventemitter3)
+加强 [`eventemitter3`](https://www.npmjs.com/package/eventemitter3)
 
 ```TypeScript
 import { EventEmitter } from "eventEmitter3";

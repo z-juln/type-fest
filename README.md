@@ -6,6 +6,22 @@ A collection of essential TypeScript types based on 'type test'
 
 base on `type test`: <https://www.npmjs.com/package/type-fest>
 
+### `As`
+
+`As` operation on type. Similar to the type assertion operator in typescript - `as`.
+
+对类型的 "as" 操作. 类似于对“typescript”中的类型断言操作符 ——— `as`
+
+Using `@ts-ignore` can cause type loss, and most scenarios are not as comfortable as using `as`.
+
+用 "@ts-ignore" 会导致类型丢失, 大部分场景不如 "as" 操作舒服
+
+```TypeScript
+type BetterContent<D extends { content: string }, prefix extends string> =
+  D extends { content: infer C } ? `${prefix}: ${As<C, string>}` : never;
+type R = BetterContent<{ content: 'xxx' }, 'content'>;
+```
+
 ### `PartialPartial`
 
 Make partial properties in T optional.

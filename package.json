@@ -1,6 +1,6 @@
 {
   "name": "@juln/type-fest",
-  "version": "1.1.5",
+  "version": "1.1.6",
   "description": "A collection of essential TypeScript types",
   "types": "src/index.d.ts",
   "scripts": {
@@ -27,7 +27,11 @@
     "omit",
     "merge",
     "json",
-    "generics"
+    "generics",
+    "eventemitter3",
+    "rpc",
+    "postmessage",
+    "@mixer/postmessage-rpc"
   ],
   "author": "juln",
   "license": "ISC",

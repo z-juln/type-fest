@@ -57,6 +57,13 @@ filter out `never` and `void`
 
 ## array-types (about array)
 
+### `ReadonlyArray`
+
+```TypeScript
+type OriginalArr = [1, ''];
+type Arr = ReadonlyArray<OriginalArr>; // readonly [1, '']
+```
+
 ### `PureArray`
 
 filter out `never` and `void`
@@ -64,6 +71,9 @@ filter out `never` and `void`
 ```TypeScript
 type OriginalArr = [1, '', false, number, string, boolean, symbol, {}, object, Error, null, undefined, never, void];
 type Arr = PureArray<OriginalArr>; // [1, "", false, number, string, boolean, symbol, {}, object, Error, null, undefined]
+
+type ReadonlyOriginalArr = readonly [1, 2, never, void];
+type ReadonlyArr = PureArray<ReadonlyOriginalArr>; // readonly [1, 2]
 ```
 
 ## better-typed

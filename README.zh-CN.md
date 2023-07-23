@@ -57,6 +57,13 @@ filter out `never` and `void`
 
 ## array-types (关于数组)
 
+### `ReadonlyArray`
+
+```TypeScript
+type OriginalArr = [1, ''];
+type Arr = ReadonlyArray<OriginalArr>; // readonly [1, '']
+```
+
 ### `PureArray`
 
 过滤掉 `never` 和 `void`
@@ -64,6 +71,9 @@ filter out `never` and `void`
 ```TypeScript
 type OriginalArr = [1, '', false, number, string, boolean, symbol, {}, object, Error, null, undefined, never, void];
 type Arr = PureArray<OriginalArr>; // [1, "", false, number, string, boolean, symbol, {}, object, Error, null, undefined]
+
+type ReadonlyOriginalArr = readonly [1, 2, never, void];
+type ReadonlyArr = PureArray<ReadonlyOriginalArr>; // readonly [1, 2]
 ```
 
 ## better-typed (增强第三方类型)

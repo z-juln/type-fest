@@ -22,8 +22,8 @@ type MapTemplate<Arr extends readonly unknown[]> =
  * filter out `never` and `void`
  * 
  * @example
- * type Arr = [1, '', false, number, string, boolean, symbol, {}, object, Error, null, undefined, never, void];
- * type Arr = PureArray<Arr>; // [1, "", false, number, string, boolean, symbol, {}, object, Error, null, undefined]
+ * type OriginalArr = [1, '', false, number, string, boolean, symbol, {}, object, Error, null, undefined, never, void];
+ * type Arr = PureArray<OriginalArr>; // [1, "", false, number, string, boolean, symbol, {}, object, Error, null, undefined]
  */
 export type PureArray<Arr extends readonly unknown[]> =
   Arr extends readonly [infer Head, ...infer Rest]

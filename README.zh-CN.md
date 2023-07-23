@@ -62,8 +62,8 @@ filter out `never` and `void`
 过滤掉 `never` 和 `void`
 
 ```TypeScript
-type Arr = [1, '', false, number, string, boolean, symbol, {}, object, Error, null, undefined, never, void];
-type Arr = PureArray<Arr>; // [1, "", false, number, string, boolean, symbol, {}, object, Error, null, undefined]
+type OriginalArr = [1, '', false, number, string, boolean, symbol, {}, object, Error, null, undefined, never, void];
+type Arr = PureArray<OriginalArr>; // [1, "", false, number, string, boolean, symbol, {}, object, Error, null, undefined]
 ```
 
 ## better-typed (增强第三方类型)

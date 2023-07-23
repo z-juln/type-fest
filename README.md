@@ -21,6 +21,8 @@
 
 A collection of TypeScript types that have undergone type testing
 
+Based on [`type-fest`](https://www.npmjs.com/package/type-fest) Conduct secondary development and expose all types provided by `type-fest` (please refer to the official documentation for the use of `type test`, which is not provided here)
+
 Programming Guide for Writing Types:
 
 1. The most important aspect of type programming is to clearly know the most basic operations, which are joint to joint, joint to cross, cross to cross, and irreversible.
@@ -28,34 +30,40 @@ Programming Guide for Writing Types:
 
 ## common-types
 
-Based on [`type-fest`](https://www.npmjs.com/package/type-fest) Conduct secondary development and expose all types provided by `type-fest` (please refer to the official documentation for the use of `type test`, which is not provided here)
+### `Negate`
 
-### `As`
-
-`As` operation on type. Similar to the type assertion operator in typescript - `as`.
-
-Using `@ts-ignore` can cause type loss, and most scenarios are not as comfortable as using `as`.
+true -> false; false -> true
 
 ```TypeScript
-type BetterContent<D extends { content: string }, prefix extends string> =
-  D extends { content: infer C } ? `${prefix}: ${As<C, string>}` : never;
-type R = BetterContent<{ content: 'xxx' }, 'content'>;
+type False = Negate<true>; // false
+type True = Negate<false>; // true
 ```
 
-### `PartialPartial`
+### `IsVoid`
 
-Some attributes of the specified object become Option type
+(void extends T) and (T extends void)
+
+### `IsUndefined`
+
+(undefined extends T) and (T extends undefined)
+
+### `IsObject`
+
+(object extends T) and (T extends object)
+
+### `IsValue`
+
+filter out `never` and `void`
+
+## array-types (about array)
+
+### `PureArray`
+
+filter out `never` and `void`
 
 ```TypeScript
-type R = PartialPartial<{ a: number; b: number; }, 'a'>; // { a?: number; b: number; }
-```
-
-### `PartialRequired`
-
-Some attributes of the specified object become Required type
-
-```TypeScript
-type R = PartialRequired<{ a?: number; b?: number; }, 'a'>; // { a: number; b?: number; }
+type Arr = [1, '', false, number, string, boolean, symbol, {}, object, Error, null, undefined, never, void];
+type Arr = PureArray<Arr>; // [1, "", false, number, string, boolean, symbol, {}, object, Error, null, undefined]
 ```
 
 ## better-typed

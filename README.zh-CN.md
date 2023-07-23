@@ -21,6 +21,8 @@
 
 经过类型测试 的 TypeScript 类型的集合
 
+基于 [`type-fest`](https://www.npmjs.com/package/type-fest) 进行二次开发，且暴露出 `type-fest` 提供的所有类型 (`type-fest` 的使用文档请自行去官方看，这里不提供)
+
 编写类型编程指南:
 
 1. 类型编程最主要的就是，明确知道最基础的那些操作，哪些是联合转联合、哪些是联合转交叉、哪些是交叉转交叉、哪些是不可逆操作。
@@ -28,34 +30,40 @@
 
 ## common-types (通用类型)
 
-基于 [`type-fest`](https://www.npmjs.com/package/type-fest) 进行二次开发，且暴露出 `type-fest` 提供的所有类型 (`type-fest` 的使用文档请自行去官方看，这里不提供)
+### `Negate`
 
-### `As`
-
-对类型的 "as" 操作. 类似于对“typescript”中的类型断言操作符 ——— `as`
-
-用 "@ts-ignore" 会导致类型丢失, 大部分场景不如 "as" 操作舒服
+true -> false; false -> true
 
 ```TypeScript
-type BetterContent<D extends { content: string }, prefix extends string> =
-  D extends { content: infer C } ? `${prefix}: ${As<C, string>}` : never;
-type R = BetterContent<{ content: 'xxx' }, 'content'>;
+type False = Negate<true>; // false
+type True = Negate<false>; // true
 ```
 
-### `PartialPartial`
+### `IsVoid`
 
-指定 object 的部分属性变成可选类型
+(void extends T) and (T extends void)
+
+### `IsUndefined`
+
+(undefined extends T) and (T extends undefined)
+
+### `IsObject`
+
+(object extends T) and (T extends object)
+
+### `IsValue`
+
+filter out `never` and `void`
+
+## array-types (关于数组)
+
+### `PureArray`
+
+过滤掉 `never` 和 `void`
 
 ```TypeScript
-type R = PartialPartial<{ a: number; b: number; }, 'a'>; // { a?: number; b: number; }
-```
-
-### `PartialRequired`
-
-指定 object 的部分属性变成不可选类型
-
-```TypeScript
-type R = PartialRequired<{ a?: number; b?: number; }, 'a'>; // { a: number; b?: number; }
+type Arr = [1, '', false, number, string, boolean, symbol, {}, object, Error, null, undefined, never, void];
+type Arr = PureArray<Arr>; // [1, "", false, number, string, boolean, symbol, {}, object, Error, null, undefined]
 ```
 
 ## better-typed (增强第三方类型)

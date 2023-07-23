@@ -1,4 +1,4 @@
-import { expectError } from 'tsd';
+import { expectError, expectType, printType } from 'tsd';
 import TypedEventEmitter3 from '../../src/better-typed/eventemitter3';
 
 interface MyEventMap {
@@ -22,7 +22,8 @@ const ee: TypedEventEmitter3<MyEventMap> = {} as any;
 // EventName有代码提示
 // 参数为空
 ee.on('close', (...args) => {
-
+  type EmptyArgs = [] | readonly[] | never[] | [void];
+  expectType<typeof args extends EmptyArgs ? true : false>(true);
 });
 // 参数Error
 ee.once('load-error', (err) => {

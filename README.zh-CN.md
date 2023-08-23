@@ -55,6 +55,26 @@ type True = Negate<false>; // true
 
 filter out `never` and `void`
 
+## function-types (增强函数)
+
+### `PromiseFn`
+
+将非 promise 的函数返回值变成 promise
+
+```TypeScript
+type OriginalFn = (a: 1, b: 2) => number;
+type Fn = PromiseFn<OriginalFn>; // (a: 1, b: 2) => Promise<number>
+```
+
+### `PromisableFn`
+
+将非 promise 的函数返回值变成 promisable
+
+```TypeScript
+type OriginalFn = (a: 1, b: 2) => number;
+type Fn = PromisableFn<OriginalFn>; // (a: 1, b: 2) => Promise<number> | number
+```
+
 ## array-types (关于数组)
 
 ### `ReadonlyArray`

@@ -55,6 +55,26 @@ type True = Negate<false>; // true
 
 filter out `never` and `void`
 
+## function-types (about function)
+
+### `PromiseFn`
+
+Change the return value of a function that is not `promise` to `promise`
+
+```TypeScript
+type OriginalFn = (a: 1, b: 2) => number;
+type Fn = PromiseFn<OriginalFn>; // (a: 1, b: 2) => Promise<number>
+```
+
+### `PromisableFn`
+
+Change the return value of a function that is not `promise` to `promisable`
+
+```TypeScript
+type OriginalFn = (a: 1, b: 2) => number;
+type Fn = PromisableFn<OriginalFn>; // (a: 1, b: 2) => Promise<number> | number
+```
+
 ## array-types (about array)
 
 ### `ReadonlyArray`

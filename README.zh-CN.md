@@ -96,6 +96,18 @@ type ReadonlyOriginalArr = readonly [1, 2, never, void];
 type ReadonlyArr = PureArray<ReadonlyOriginalArr>; // readonly [1, 2]
 ```
 
+## color-types (about color)
+
+### `HexColor`
+
+校验16进制颜色值
+
+```TypeScript
+type Res1 = HexColor<'#fff'> // '#fff';
+type Res2 = HexColor<'#ffffff'> // '#ffffff';
+type Res3 = HexColor<'#xxx'> // never;
+```
+
 ## better-typed (增强第三方类型)
 
 针对第三方库进行 ts 类型的加强

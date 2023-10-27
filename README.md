@@ -96,6 +96,18 @@ type ReadonlyOriginalArr = readonly [1, 2, never, void];
 type ReadonlyArr = PureArray<ReadonlyOriginalArr>; // readonly [1, 2]
 ```
 
+## color-types (about color)
+
+### `HexColor`
+
+verify hexadecimal color values
+
+```TypeScript
+type Res1 = HexColor<'#fff'> // '#fff';
+type Res2 = HexColor<'#ffffff'> // '#ffffff';
+type Res3 = HexColor<'#xxx'> // never;
+```
+
 ## better-typed
 
 Strengthening the TS type for third-party libraries

@@ -84,6 +84,39 @@ type OriginalArr = [1, ''];
 type Arr = ReadonlyArray<OriginalArr>; // readonly [1, '']
 ```
 
+## object-types (about object)
+
+### `Spreadable`
+
+```TypeScript
+type Obj = {
+  a: 1;
+  b: 2;
+  c: 3;
+};
+type ObjIsSpreadable = Obj extends Spreadable ? true : false; // true
+```
+
+### `DeepKeysOfSpreadable`
+
+递归获取可扩展类型的所有键。
+
+```TypeScript
+type Obj = {
+  0: string;
+  a: {
+    b: {
+      c: string;
+      d: string;
+    };
+  };
+  e: string;
+  f: string;
+  [Symbol.hasInstance]: 0;
+};
+type Keys = DeepKeysOfSpreadable<Obj>; // `Keys` 等价于 0 | 'c' | 'd' | 'f' | Symbol.hasInstance;
+```
+
 ### `PureArray`
 
 过滤掉 `never` 和 `void`

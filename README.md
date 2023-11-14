@@ -96,6 +96,39 @@ type ReadonlyOriginalArr = readonly [1, 2, never, void];
 type ReadonlyArr = PureArray<ReadonlyOriginalArr>; // readonly [1, 2]
 ```
 
+## object-types (about object)
+
+### `Spreadable`
+
+```TypeScript
+type Obj = {
+  a: 1;
+  b: 2;
+  c: 3;
+};
+type ObjIsSpreadable = Obj extends Spreadable ? true : false; // true
+```
+
+### `DeepKeysOfSpreadable`
+
+Get all keys of an spreadable type recursively.
+
+```TypeScript
+type Obj = {
+  0: string;
+  a: {
+    b: {
+      c: string;
+      d: string;
+    };
+  };
+  e: string;
+  f: string;
+  [Symbol.hasInstance]: 0;
+};
+type Keys = DeepKeysOfSpreadable<Obj>; // `Keys` equivalent to 0 | 'c' | 'd' | 'f' | Symbol.hasInstance;
+```
+
 ## color-types (about color)
 
 ### `HexColor`

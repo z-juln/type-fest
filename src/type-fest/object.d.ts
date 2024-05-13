@@ -50,7 +50,7 @@ export type DeepKeysOfSpreadable<Obj extends Record<any, any>> = InnerDeepKeysOf
  * type Res = MergeObject<AC, BC>; // { a?: 'a'; b?: 'b'; c: 'c'; };
  * ```
  */
-export type MergeObject<O1, O2, O3, O4, O5, O6> = {
+type MergeObject<O1 = {}, O2 = {}, O3 = {}, O4 = {}, O5 = {}, O6 = {}> = {
   [K in keyof (O1 & O2 & O3 & O4 & O5 & O6)]?: (O1 & O2 & O3 & O4 & O5 & O6)[K];
 } & {
   [K in keyof (O1 | O2 | O3 | O4 | O5 | O6)]: (O1 | O2 | O3 | O4 | O5 | O6)[K];

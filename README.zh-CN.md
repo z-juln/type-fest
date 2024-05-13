@@ -117,6 +117,20 @@ type Obj = {
 type Keys = DeepKeysOfSpreadable<Obj>; // `Keys` 等价于 0 | 'c' | 'd' | 'f' | Symbol.hasInstance;
 ```
 
+### `MergeObject`
+
+```TypeScript
+type AC = {
+  a: 'a';
+  c: 'c';
+};
+type BC = {
+  b: 'b';
+  c: 'c';
+};
+type Res = MergeObject<AC, BC>; // { a?: 'a'; b?: 'b'; c: 'c'; };
+```
+
 ### `PureArray`
 
 过滤掉 `never` 和 `void`

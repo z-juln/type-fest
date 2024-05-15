@@ -46,6 +46,7 @@ import { DeepKeysOfSpreadable, MergeObjects } from './../../src/type-fest/object
       d1: 0;
     };
     e: 'e';
+    f: 'f1';
   };
   type O2 = {
     b: 'b';
@@ -54,6 +55,7 @@ import { DeepKeysOfSpreadable, MergeObjects } from './../../src/type-fest/object
       d2: 1;
     };
     e: { e: 'e'; };
+    f: 'f2';
   };
   type Res = MergeObjects<[O1, O2]>;
   type ExpectType = {
@@ -67,6 +69,7 @@ import { DeepKeysOfSpreadable, MergeObjects } from './../../src/type-fest/object
     e: 'e' | {
       e: 'e';
     };
+    f: 'f1' | 'f2';
   };
   expectType<Res extends ExpectType ? true : false>(true);
   expectType<ExpectType extends Res ? true : false>(true);

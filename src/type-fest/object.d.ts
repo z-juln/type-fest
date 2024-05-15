@@ -47,6 +47,7 @@ export type DeepKeysOfSpreadable<Obj extends Record<any, any>> = InnerDeepKeysOf
  *     d1: 0;
  *   };
  *   e: 'e';
+ *   f: 'f1';
  * };
  * type O2 = {
  *   b: 'b';
@@ -55,8 +56,9 @@ export type DeepKeysOfSpreadable<Obj extends Record<any, any>> = InnerDeepKeysOf
  *     d2: 1;
  *   };
  *   e: { e: 'e'; };
+ *   f: 'f2';
  * };
- * type Res = MergeObjects<[O1, O2, ...]>; // { a?: 'a'; b?: 'b'; c: 'c'; d: { d1?: 0; d2?: 1; }; e: 'e' | { e: 'e'; }; };
+ * type Res = MergeObjects<[O1, O2, ...]>; // { a?: 'a'; b?: 'b'; c: 'c'; d: { d1?: 0; d2?: 1; }; e: 'e' | { e: 'e'; }; f: 'f1' | 'f2'; };
  * ```
  */
 export type MergeObjects<Objects extends object[]> =
@@ -68,7 +70,16 @@ export type MergeObjects<Objects extends object[]> =
     : never;
 
 type MergeTwoObjects<O1 = {}, O2 = {}> = Omit<{
-  [K in keyof (O1 & O2)]?: (O1 & O2)[K];
+  [K in (keyof O1 | keyof O2)]?:
+    // @ts-ignore
+    IsUnknown<O1[K]> extends true
+      // @ts-ignore
+      ? O2[K]
+      // @ts-ignore
+      : IsUnknown<O2[K]> extends true
+        // @ts-ignore
+        ? O1[K]
+        : (O1 & O2)[K];
 }, keyof (O1 | O2)> & {
   [K in keyof (O1 | O2)]: MergeValue<K, O1, O2>;
 };

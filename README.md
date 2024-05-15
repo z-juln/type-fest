@@ -141,6 +141,7 @@ type O1 = {
     d1: 0;
   };
   e: 'e';
+  f: 'f1';
 };
 type O2 = {
   b: 'b';
@@ -149,8 +150,9 @@ type O2 = {
     d2: 1;
   };
   e: { e: 'e'; };
+  f: 'f2';
 };
-type Res = MergeObjects<[O1, O2, ...]>; // { a?: 'a'; b?: 'b'; c: 'c'; d: { d1?: 0; d2?: 1; }; e: 'e' | { e: 'e'; }; };
+type Res = MergeObjects<[O1, O2, ...]>; // { a?: 'a'; b?: 'b'; c: 'c'; d: { d1?: 0; d2?: 1; }; e: 'e' | { e: 'e'; }; f: 'f1' | 'f2'; };
 ```
 
 ## color-types (about color)

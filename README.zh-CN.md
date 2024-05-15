@@ -155,6 +155,14 @@ type ReadonlyOriginalArr = readonly [1, 2, never, void];
 type ReadonlyArr = PureArray<ReadonlyOriginalArr>; // readonly [1, 2]
 ```
 
+## `TuplifyUnion`
+
+Union 转 tuple, 但是tuple的顺序不可靠, 有可能是 [X, Y] 也可能是 [Y, X]
+```typescript
+type abc = 'a' | 'b' | 'c';
+type t = TuplifyUnion<abc>; // ["a", "b", "c"]
+```
+
 ## color-types (about color)
 
 ### `HexColor`

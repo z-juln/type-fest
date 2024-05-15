@@ -155,6 +155,14 @@ type O2 = {
 type Res = MergeObjects<[O1, O2, ...]>; // { a?: 'a'; b?: 'b'; c: 'c'; d: { d1?: 0; d2?: 1; }; e: 'e' | { e: 'e'; }; f: 'f1' | 'f2'; };
 ```
 
+### `MixedTuple`
+
+Merge multiple objects. like `MergeObjects`
+
+```TypeScript
+type Res = MergeObjects<O1 | O2>;
+```
+
 ## `TuplifyUnion`
 
 Union to tuple, but You can't rely on the ordering of a union type. It's an implementation detail of the compiler; since X | Y is equivalent to Y | X, the compiler feels free to change one to the other.

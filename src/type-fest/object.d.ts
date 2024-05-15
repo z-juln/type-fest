@@ -1,4 +1,5 @@
 import { IsUnknown, ValueOf } from 'type-fest';
+import { TuplifyUnion } from './tuplify-union';
 
 type TupleOrArray = readonly [...unknown[]];
 
@@ -102,3 +103,30 @@ type MergeValue<
             : (
               IsExtendObject<V1> | IsExtendObject<V2> extends true ? MergeTwoObjects<V1, V2> : V1 | V2
             );
+
+/**
+ * Merge multiple objects
+ * @example
+ * ```ts
+ * type O1 = {
+ *   a: 'a';
+ *   c: 'c';
+ *   d: {
+ *     d1: 0;
+ *   };
+ *   e: 'e';
+ *   f: 'f1';
+ * };
+ * type O2 = {
+ *   b: 'b';
+ *   c: 'c';
+ *   d: {
+ *     d2: 1;
+ *   };
+ *   e: { e: 'e'; };
+ *   f: 'f2';
+ * };
+ * type Res = MixedTuple<O1 | O2>; // { a?: 'a'; b?: 'b'; c: 'c'; d: { d1?: 0; d2?: 1; }; e: 'e' | { e: 'e'; }; f: 'f1' | 'f2'; };
+ * ```
+ */
+export type MixedTuple<T extends object> = MergeObjects<[...TuplifyUnion<T>, ...TuplifyUnion<T>]>;

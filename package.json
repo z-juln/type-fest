@@ -1,6 +1,6 @@
 {
   "name": "@juln/type-fest",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "description": "A collection of essential TypeScript types",
   "types": "src/index.d.ts",
   "scripts": {

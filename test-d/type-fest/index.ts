@@ -1,6 +1,6 @@
 import { expectError, expectType } from 'tsd';
 import { PureArray } from './../../src/type-fest/array';
-import { DeepKeysOfSpreadable } from './../../src/type-fest/object.d';
+import { DeepKeysOfSpreadable, MergeObjects } from './../../src/type-fest/object.d';
 
 {
   type ExpectType = [1, "", false, number, string, boolean, symbol, {}, object, Error, null, undefined];
@@ -36,4 +36,38 @@ import { DeepKeysOfSpreadable } from './../../src/type-fest/object.d';
   expectError<DeepKeysOfSpreadable<Obj>>(
     {} as typeof Symbol.iterator
   );
+}
+
+{
+  type O1 = {
+    a: 'a';
+    c: 'c';
+    d: {
+      d1: 0;
+    };
+    e: 'e';
+  };
+  type O2 = {
+    b: 'b';
+    c: 'c';
+    d: {
+      d2: 1;
+    };
+    e: { e: 'e'; };
+  };
+  type Res = MergeObjects<[O1, O2]>;
+  type ExpectType = {
+    a?: 'a';
+    b?: 'b';
+    c: 'c';
+    d: {
+      d1?: 0;
+      d2?: 1;
+    };
+    e: 'e' | {
+      e: 'e';
+    };
+  };
+  expectType<Res extends ExpectType ? true : false>(true);
+  expectType<ExpectType extends Res ? true : false>(true);
 }

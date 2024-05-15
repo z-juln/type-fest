@@ -129,18 +129,28 @@ type Obj = {
 type Keys = DeepKeysOfSpreadable<Obj>; // `Keys` equivalent to 0 | 'c' | 'd' | 'f' | Symbol.hasInstance;
 ```
 
-### `MergeObject`
+### `MergeObjects`
+
+Merge multiple objects
 
 ```TypeScript
-type AC = {
+type O1 = {
   a: 'a';
   c: 'c';
+  d: {
+    d1: 0;
+  };
+  e: 'e';
 };
-type BC = {
+type O2 = {
   b: 'b';
   c: 'c';
+  d: {
+    d2: 1;
+  };
+  e: { e: 'e'; };
 };
-type Res = MergeObject<AC, BC>; // { a?: 'a'; b?: 'b'; c: 'c'; };
+type Res = MergeObjects<[O1, O2, ...]>; // { a?: 'a'; b?: 'b'; c: 'c'; d: { d1?: 0; d2?: 1; }; e: 'e' | { e: 'e'; }; };
 ```
 
 ## color-types (about color)
